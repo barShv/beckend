@@ -1,7 +1,27 @@
-from flask import Flask, redirect,url_for
+from flask import Flask, redirect, url_for, render_template, request, session
 
 app = Flask(__name__)
 
+
+@app.route('/cvMain')
+@app.route('/')
+def cvMain():
+    return render_template('CV.html')
+
+
+@app.route('/assignment8')
+def assignment8():
+    return render_template('assignment8.html', skills=['java', 'sql', 'python', 'excel', 'R-studio', ''],
+                           languages=['english', 'hebrew'])
+
+
+if __name__ == '__main__':
+    app.run(debug=True)    # start run the server
+
+
+
+'''
+from assigment 7:
 @app.route('/home')
 @app.route('/')
 def home():
@@ -19,19 +39,9 @@ def logIn():  # put application's code here
     # TODO
     return "insert your user name and password"
 
-
-if __name__ == '__main__':
-    app.run(debug=True)    # start run the server
-
-'''
 what is tamplates and static folders:
 # templates for the html pages
 # static for css and java scripts and imgs
 
-#examples from the first lesson: 
-@app.route('/home') # if we want the route open with "/home" and also only "/"
-@app.route('/')  # this option need to be the closer to the function
-def hello_world():  # put application's code here
-    return 'Hello World!'
 
 '''

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>assigment8</title>
+    <link rel="stylesheet" href="static/cvStyle.css">
+</head>
+<body>
+{% include('header.html') %} <!--generic header to all pages-->
+
+{% extends'CV.html' %}
+{% block assigment8 %}
+    {{ super() }}
+    <h3> my skills: </h3>
+    <ul> {# un-ordered list #}
+    {% for skill in skills %} {# detail-for the key, val-for the value #}
+    <li>{{ skill | default('learning fast',true) | upper}}</li>
+    {% endfor %}
+     {% if languages %}
+     <h3> The languages i know: </h3>
+         </ul>
+         {% for languege in languages %} {# detail-for the key, val-for the value #}
+         <li>{{ languege | default('hebrew',true)| upper }}</li>
+         {% endfor %}
+         </ul>
+     {% endif %}
+
+{%  endblock %}
+
+{#{% set page_name = 'Skills&Languages page' %}#}
+{#{% include('footer.html',page_name)%}#}
+
+
+</body>
+</html>

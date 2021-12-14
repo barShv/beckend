@@ -1,0 +1,13 @@
+* {
+    text-align: center;
+    background-color: gray;
+    font-family: Tahoma;
+}
+
+body {
+    color: black;
+}
+
+img {
+    max-width: 20%;
+}
