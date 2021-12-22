@@ -11,3 +11,8 @@ body {
 img {
     max-width: 20%;
 }
+
+ul {
+     text-align: center;
+    align: center;
+}
