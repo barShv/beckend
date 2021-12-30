@@ -1,7 +1,43 @@
 from flask import Flask, redirect, url_for, render_template, request, session
+import mysql.connector
 
 app = Flask(__name__)
 app.secret_key = 'bar555'
+
+
+from assignment10.assignment10 import assignment10
+app.register_blueprint(assignment10)
+
+def interact_db(query, query_type: str):
+    return_value = False
+    connection = mysql.connector.connect(host='localhost',
+                                         user='root',
+                                         password='barShv1995',
+                                         database='web_lessons') # schema name
+    cursor = connection.cursor(named_tuple=True) # מצביע לבסיס הנתונים
+    cursor.execute(query)
+
+    if query_type == 'commit':
+        # Use for insert, update, delete statements.
+        # Returns: the number of rows affected by the query
+        connection.commit()
+        return_value = True
+
+    if query_type == 'fetch':
+        # use for select statement
+        # returns: false if the query failed, or the result of the query if it succeed
+        query_result = cursor.fetchall()
+        return_value = query_result
+
+    connection.close()
+    cursor.close()
+    return return_value
+
+def check_email (email_to_check):
+    for user_num, user_info in users.items():
+        if (user_info['email'] == email_to_check):
+            return (user_info['name'], user_info['email'])
+    return False
 
 # define a users dict
 users = {'user1': {'name': 'Bar', 'email': 'bar666@gmail.com'},
@@ -11,12 +47,11 @@ users = {'user1': {'name': 'Bar', 'email': 'bar666@gmail.com'},
         'user5': {'name': 'Yonit', 'email': 'yonitnit@gmail.com'},
         'user6': {'name': 'Eyal', 'email': 'Eyali5@gmail.com'}}
 
-def check_email (email_to_check):
-    for user_num, user_info in users.items():
-        if (user_info['email'] == email_to_check):
-            return (user_info['name'], user_info['email'])
-    return False
-
+'''
+for user_num, user_info in users.items():
+    query = "INSERT INTO users (name, email) VALUES ('%s','%s')" % (user_info['name'], user_info['email'])
+    interact_db(query, query_type='commit')
+'''
 
 @app.route('/cvMain')
 @app.route('/')

@@ -7,7 +7,7 @@
 </head>
 <body>
 {% include('header.html') %}
-     <h3> Search form</h3>
+     <h3> Search form </h3>
      <h4> insert an email address of the user you want to find</h4>
     <form method="GET" action="/assignment9">
     email: <input name="user_email" type=text" ><br><br>
@@ -15,7 +15,7 @@
     </form>
 
     <h3>search result </h3>
-    {% if user_email%}
+    {% if user_email %}
     <h4> Hello {{ user_name }},  {{ user_email }} </h4>
     {% elif user_email==null and users %}
     <h4> no results found, here is the user list:</h4>
