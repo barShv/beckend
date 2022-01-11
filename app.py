@@ -1,20 +1,24 @@
+import json
+import collections
 from flask import Flask, redirect, url_for, render_template, request, session
 import mysql.connector
+import requests
 
 app = Flask(__name__)
 app.secret_key = 'bar555'
 
-
 from assignment10.assignment10 import assignment10
+
 app.register_blueprint(assignment10)
+
 
 def interact_db(query, query_type: str):
     return_value = False
     connection = mysql.connector.connect(host='localhost',
                                          user='root',
                                          password='barShv1995',
-                                         database='web_lessons') # schema name
-    cursor = connection.cursor(named_tuple=True) # מצביע לבסיס הנתונים
+                                         database='web_lessons')  # schema name
+    cursor = connection.cursor(named_tuple=True)  # מצביע לבסיס הנתונים
     cursor.execute(query)
 
     if query_type == 'commit':
@@ -33,25 +37,28 @@ def interact_db(query, query_type: str):
     cursor.close()
     return return_value
 
-def check_email (email_to_check):
+
+def check_email(email_to_check):
     for user_num, user_info in users.items():
         if (user_info['email'] == email_to_check):
             return (user_info['name'], user_info['email'])
     return False
 
+
 # define a users dict
 users = {'user1': {'name': 'Bar', 'email': 'bar666@gmail.com'},
-        'user2': {'name': 'Gal', 'email': 'galgol3@gmail.com'},
-        'user3': {'name': 'Roni', 'email': 'roniS7@gmail.com'},
-        'user4': {'name': 'Ziv', 'email': 'zivi6@gmail.com'},
-        'user5': {'name': 'Yonit', 'email': 'yonitnit@gmail.com'},
-        'user6': {'name': 'Eyal', 'email': 'Eyali5@gmail.com'}}
+         'user2': {'name': 'Gal', 'email': 'galgol3@gmail.com'},
+         'user3': {'name': 'Roni', 'email': 'roniS7@gmail.com'},
+         'user4': {'name': 'Ziv', 'email': 'zivi6@gmail.com'},
+         'user5': {'name': 'Yonit', 'email': 'yonitnit@gmail.com'},
+         'user6': {'name': 'Eyal', 'email': 'Eyali5@gmail.com'}}
 
 '''
 for user_num, user_info in users.items():
     query = "INSERT INTO users (name, email) VALUES ('%s','%s')" % (user_info['name'], user_info['email'])
     interact_db(query, query_type='commit')
 '''
+
 
 @app.route('/cvMain')
 @app.route('/')
@@ -79,10 +86,39 @@ def assignment9():
         session['userName'] = userName
     return render_template('assignment9.html')
 
+
 @app.route('/logout', methods=['GET', 'POST'])
 def log_out():
     session['userName'] = ""
     return redirect(url_for('assignment9'))
+
+
+@app.route('/assignment11/users')
+def assignment11_users():
+    objects_list = []
+    query = "select * from users"
+    query_result = interact_db(query, query_type='fetch')
+    for row in query_result:
+        d = collections.OrderedDict()
+        d['name'] = row[0]
+        d['email'] = row[1]
+        objects_list.append(d)
+    query_result_jason = json.dumps(objects_list)
+    return render_template('assignment11 - users.html', users=query_result_jason)
+
+
+def get_user(id_num):
+    user = requests.get(f' https://reqres.in/api/users/{id_num}')
+    user = user.json()
+    return user
+
+@app.route('/assignment11/outer_source', methods=['GET', 'POST'])
+def assignment11_outer_source():
+    if request.method == 'POST':
+        id_num = request.form['id']
+        user = get_user(id_num)
+        return render_template('assignment11_outer_source.html', user=user)
+    return render_template('assignment11_outer_source.html')
 
 
 if __name__ == '__main__':
