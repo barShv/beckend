@@ -3,6 +3,8 @@ import collections
 from flask import Flask, redirect, url_for, render_template, request, session
 import mysql.connector
 import requests
+from flask import jsonify
+
 
 app = Flask(__name__)
 app.secret_key = 'bar555'
@@ -95,16 +97,15 @@ def log_out():
 
 @app.route('/assignment11/users')
 def assignment11_users():
-    objects_list = []
+    objects_dict = {}
     query = "select * from users"
     query_result = interact_db(query, query_type='fetch')
-    for row in query_result:
-        d = collections.OrderedDict()
-        d['name'] = row[0]
-        d['email'] = row[1]
-        objects_list.append(d)
-    query_result_jason = json.dumps(objects_list)
-    return render_template('assignment11 - users.html', users=query_result_jason)
+    for user in query_result:
+        objects_dict[f'user_{user.id}'] = {
+            'name': user.name,
+            'email': user.email,
+        }
+    return jsonify(objects_dict)
 
 
 def get_user(id_num):
@@ -119,6 +120,7 @@ def assignment11_outer_source():
         user = get_user(id_num)
         return render_template('assignment11_outer_source.html', user=user)
     return render_template('assignment11_outer_source.html')
+
 
 
 if __name__ == '__main__':
