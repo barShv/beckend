@@ -5,7 +5,6 @@ import mysql.connector
 import requests
 from flask import jsonify
 
-
 app = Flask(__name__)
 app.secret_key = 'bar555'
 
@@ -113,6 +112,7 @@ def get_user(id_num):
     user = user.json()
     return user
 
+
 @app.route('/assignment11/outer_source', methods=['GET', 'POST'])
 def assignment11_outer_source():
     if request.method == 'POST':
@@ -120,6 +120,25 @@ def assignment11_outer_source():
         user = get_user(id_num)
         return render_template('assignment11_outer_source.html', user=user)
     return render_template('assignment11_outer_source.html')
+
+
+@app.route('/assignment12/restapi_users', defaults={'user_id': 2})
+@app.route('/assignment12/restapi_users/<int:user_id>', methods=['GET', 'POST'])
+def get_users_func(user_id):
+    query = 'select * from users where id=%s;' % user_id
+    users = interact_db(query=query, query_type='fetch')
+    if len(users) == 0:
+        return_dict = {
+            'status': 'failed',
+            'message': 'user not found'
+        }
+    else:
+        return_dict = {
+            'id': users[0].id,
+            'name': users[0].name,
+            'email': users[0].email,
+        }
+    return jsonify(return_dict)
 
 
 
